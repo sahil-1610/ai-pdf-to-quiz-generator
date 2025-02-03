@@ -3,7 +3,7 @@ import { questionSchema, questionsSchema } from "@/lib/schemas";
 import { google } from "@ai-sdk/google";
 import { streamObject } from "ai";
 
-export const maxDuration = 300; // Increased to 5 minutes for larger PDFs
+export const maxDuration = 60; // Increased to 1 minutes for larger PDFs
 
 export async function POST(req: Request) {
   const { files } = await req.json();
