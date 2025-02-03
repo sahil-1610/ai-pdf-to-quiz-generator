@@ -45,10 +45,10 @@ const QuestionCard: React.FC<{
               showCorrectAnswer && answerLabels[index] === question.answer
                 ? "bg-green-600 hover:bg-green-700"
                 : showCorrectAnswer &&
-                    selectedAnswer === answerLabels[index] &&
-                    selectedAnswer !== question.answer
-                  ? "bg-red-600 hover:bg-red-700"
-                  : ""
+                  selectedAnswer === answerLabels[index] &&
+                  selectedAnswer !== question.answer
+                ? "bg-red-600 hover:bg-red-700"
+                : ""
             }`}
             onClick={() => onSelectAnswer(answerLabels[index])}
           >
@@ -79,7 +79,7 @@ export default function Quiz({
 }: QuizProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>(
-    Array(questions.length).fill(null),
+    Array(questions.length).fill(null)
   );
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [score, setScore] = useState<number | null>(null);
@@ -130,7 +130,44 @@ export default function Quiz({
     setProgress(0);
   };
 
+  // Safeguard: Check if questions array is empty
+  if (questions.length === 0) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold mb-4">No Questions Available</h1>
+          <p className="text-muted-foreground mb-6">
+            The PDF did not generate any questions. Please try another file.
+          </p>
+          <Button onClick={clearPDF} className="bg-primary hover:bg-primary/90">
+            <FileText className="mr-2 h-4 w-4" /> Try Another PDF
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   const currentQuestion = questions[currentQuestionIndex];
+
+  // Safeguard: Ensure currentQuestion is defined
+  if (!currentQuestion) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold mb-4">Error Loading Question</h1>
+          <p className="text-muted-foreground mb-6">
+            The current question could not be loaded. Please reset the quiz.
+          </p>
+          <Button
+            onClick={handleReset}
+            className="bg-primary hover:bg-primary/90"
+          >
+            <RefreshCw className="mr-2 h-4 w-4" /> Reset Quiz
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">

@@ -26,7 +26,7 @@ import { VercelIcon, GitIcon } from "@/components/icons";
 export default function ChatWithFiles() {
   const [files, setFiles] = useState<File[]>([]);
   const [questions, setQuestions] = useState<z.infer<typeof questionsSchema>>(
-    [],
+    []
   );
   const [isDragging, setIsDragging] = useState(false);
   const [title, setTitle] = useState<string>();
@@ -53,14 +53,14 @@ export default function ChatWithFiles() {
 
     if (isSafari && isDragging) {
       toast.error(
-        "Safari does not support drag & drop. Please use the file picker.",
+        "Safari does not support drag & drop. Please use the file picker."
       );
       return;
     }
 
     const selectedFiles = Array.from(e.target.files || []);
     const validFiles = selectedFiles.filter(
-      (file) => file.type === "application/pdf" && file.size <= 5 * 1024 * 1024,
+      (file) => file.type === "application/pdf" && file.size <= 5 * 1024 * 1024
     );
     console.log(validFiles);
 
@@ -87,7 +87,7 @@ export default function ChatWithFiles() {
         name: file.name,
         type: file.type,
         data: await encodeFileAsBase64(file),
-      })),
+      }))
     );
     submit({ files: encodedFiles });
     const generatedTitle = await generateQuizTitle(encodedFiles[0].name);
@@ -99,9 +99,13 @@ export default function ChatWithFiles() {
     setQuestions([]);
   };
 
-  const progress = partialQuestions ? (partialQuestions.length / 4) * 100 : 0;
+  // Use the actual number of questions generated
+  const totalQuestions = questions.length;
+  const progress = partialQuestions
+    ? (partialQuestions.length / totalQuestions) * 100
+    : 0;
 
-  if (questions.length === 4) {
+  if (questions.length > 0) {
     return (
       <Quiz title={title ?? "Quiz"} questions={questions} clearPDF={clearPDF} />
     );
@@ -206,13 +210,13 @@ export default function ChatWithFiles() {
         </CardContent>
         {isLoading && (
           <CardFooter className="flex flex-col space-y-4">
-            <div className="w-full space-y-1">
+            {/* <div className="w-full space-y-1">
               <div className="flex justify-between text-sm text-muted-foreground">
                 <span>Progress</span>
                 <span>{Math.round(progress)}%</span>
               </div>
               <Progress value={progress} className="h-2" />
-            </div>
+            </div> */}
             <div className="w-full space-y-2">
               <div className="grid grid-cols-6 sm:grid-cols-4 items-center space-x-2 text-sm">
                 <div
@@ -222,7 +226,7 @@ export default function ChatWithFiles() {
                 />
                 <span className="text-muted-foreground text-center col-span-4 sm:col-span-2">
                   {partialQuestions
-                    ? `Generating question ${partialQuestions.length + 1} of 4`
+                    ? `Generating question `
                     : "Analyzing PDF content"}
                 </span>
               </div>
@@ -237,7 +241,7 @@ export default function ChatWithFiles() {
       >
         <NextLink
           target="_blank"
-          href="https://github.com/vercel-labs/ai-sdk-preview-pdf-support"
+          href="https://github.com/sahil-1610"
           className="flex flex-row gap-2 items-center border px-2 py-1.5 rounded-md hover:bg-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-800"
         >
           <GitIcon />
@@ -246,11 +250,19 @@ export default function ChatWithFiles() {
 
         <NextLink
           target="_blank"
-          href="https://vercel.com/templates/next.js/ai-quiz-generator"
-          className="flex flex-row gap-2 items-center bg-zinc-900 px-2 py-1.5 rounded-md text-zinc-50 hover:bg-zinc-950 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-50"
+          href="https://sahiltiwari.me"
+          className="flex flex-row gap-2 items-center border px-2 py-1.5 rounded-md hover:bg-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-800"
+        >
+          Om Ji
+        </NextLink>
+
+        <NextLink
+          target="_blank"
+          href="https://vercel.com"
+          className="flex flex-row gap-2 items-center border px-2 py-1.5 rounded-md hover:bg-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-800"
         >
           <VercelIcon size={14} />
-          Deploy with Vercel
+          Layout by Vercel
         </NextLink>
       </motion.div>
     </div>

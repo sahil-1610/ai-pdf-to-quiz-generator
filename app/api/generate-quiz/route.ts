@@ -1,8 +1,9 @@
+import { z } from "zod";
 import { questionSchema, questionsSchema } from "@/lib/schemas";
 import { google } from "@ai-sdk/google";
 import { streamObject } from "ai";
 
-export const maxDuration = 60;
+export const maxDuration = 300; // Increased to 5 minutes for larger PDFs
 
 export async function POST(req: Request) {
   const { files } = await req.json();
@@ -14,14 +15,17 @@ export async function POST(req: Request) {
       {
         role: "system",
         content:
-          "You are a teacher. Your job is to take a document, and create a multiple choice test (with 4 questions) based on the content of the document. Each option should be roughly equal in length.",
+          "You are a teacher. Your job is to take a document and create a multiple-choice test with questions based on its content length. " +
+          "Generate a minimum of 2 questions and a maximum of 15 questions, depending on the depth and complexity of the content. " +
+          "Each question should have 4 options of roughly equal length. " +
+          "Focus on key topics and ensure the questions cover the most important parts of the document.",
       },
       {
         role: "user",
         content: [
           {
             type: "text",
-            text: "Create a multiple choice test based on this document.",
+            text: "Create a multiple-choice test based on this document. Generate between 2 and 15 questions, depending on the content length and complexity.",
           },
           {
             type: "file",
